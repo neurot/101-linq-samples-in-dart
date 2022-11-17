@@ -149,8 +149,8 @@ List<Product> productsList() {
 }
 
 List<dynamic> _customers = <dynamic>[];
-Future<List<Customer>> customersList() async {
-  var input = await File('Customers.json').readAsString();
+List<Customer> customersList() {
+  var input = File('Customers.json').readAsStringSync();
   var mapCustomers = convert.jsonDecode(input);
   _customers = mapCustomers['customers']
       .map((c) => Customer(

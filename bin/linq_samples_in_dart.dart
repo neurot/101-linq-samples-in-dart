@@ -15,6 +15,7 @@ const digits = [
   'eight',
   'nine'
 ];
+final customers = customersList();
 
 Future<void> main() async {
   await restrictingOperators(); // aka where
@@ -26,7 +27,7 @@ Future<void> restrictingOperators() async {
   whereSimple1();
   whereSimple2();
   whereSimple3();
-  await whereSimple4();
+  whereSimple4();
   whereIndexed();
 }
 
@@ -35,14 +36,264 @@ void projectionOperators() {
   selectSimple1();
   selectSimple2();
   selectTransformation();
-  selectAnonymousTypes();
+  selectAnonymousTypes1();
+  selectAnonymousTypes2();
+  selectAnonymousTypes3();
+  selectIndexed();
+  selectFiltered();
+  selectManyCompoundFrom1();
+  selectManyCompoundFrom2();
+  selectManyCompoundFrom3();
+  selectManyFromAssignment();
+  selectManyMultipleFrom();
+  selectManyIndexed();
 }
 
-void selectAnonymousTypes() {
+void selectManyIndexed() {
   print('''
 
-select anonymous types
-----------------------
+select many multiple from 
+-------------------------
+C#:
+    List<Customer> customers = GetCustomerList(); 
+    var customerOrders = 
+        customers.SelectMany( 
+            (cust, custIndex) => 
+            cust.Orders.Select(o => "Customer #" + (custIndex + 1) + 
+                                    " has an order with OrderID " + o.OrderID)); 
+''');
+
+  int custIndex = 0;
+  final customerOrders = customers.expand((cust) {
+    custIndex++;
+    return cust.orders.map(
+        (o) => 'Customer #$custIndex has an order with OrderId ${o.orderId}');
+  });
+
+  customerOrders.forEach(print);
+}
+
+void selectManyMultipleFrom() {
+  print('''
+
+select many multiple from 
+-------------------------
+C#:
+    List<Customer> customers = GetCustomerList(); 
+    DateTime cutoffDate = new DateTime(1997, 1, 1); 
+    var orders = 
+        from c in customers 
+        where c.Region == "WA" 
+        from o in c.Orders 
+        where o.OrderDate >= cutoffDate 
+        select new { c.CustomerID, o.OrderID }; 
+''');
+
+  final cutoffDate = DateTime(1997, 1, 1);
+  final orders = customers.where((c) => c.region == 'WA').expand((c) => c.orders
+      .where((o) => o.orderDate.isAfter(cutoffDate))
+      .map((o) => {
+            'CustomerId': c.customerId,
+            'OrderId': o.orderId,
+            'OrderDate': o.orderDate
+          }));
+
+  print('Orders from regino Washington after $cutoffDate');
+  orders.forEach(print);
+}
+
+void selectManyFromAssignment() {
+  print('''
+
+select many from assignment 
+---------------------------
+C#:
+    List<Customer> customers = GetCustomerList(); 
+    var orders = 
+        from c in customers 
+        from o in c.Orders 
+        where o.Total >= 2000.0M 
+        select new { c.CustomerID, o.OrderID, o.Total }; 
+''');
+
+  final orders = customers.expand((c) => c.orders
+      .where((o) => o.total >= 2000)
+      .map((o) => {
+            'CustomerId': c.customerId,
+            'OrderId': o.orderId,
+            'Total': o.total
+          }));
+
+  orders.forEach(print);
+}
+
+Future<void> selectManyCompoundFrom3() async {
+  print('''
+
+select many compound from 3 
+---------------------------
+C#:
+    List<Customer> customers = GetCustomerList(); 
+    var orders = 
+        from c in customers 
+        from o in c.Orders 
+        where o.OrderDate >= new DateTime(1998, 1, 1) 
+        select new { c.CustomerID, o.OrderID, o.OrderDate }; 
+''');
+
+  final orders = customers.expand((c) => c.orders
+      .where((o) => o.orderDate.isAfter(DateTime(1998, 1, 1)))
+      .map((o) => {
+            'CustomerId': c.customerId,
+            'OrderId': o.orderId,
+            'OrderDate': o.orderDate
+          }));
+
+  orders.forEach(print);
+}
+
+void selectManyCompoundFrom2() {
+  print('''
+
+select many compound from 2 
+---------------------------
+C#:
+    List<Customer> customers = GetCustomerList(); 
+    var orders = 
+        from c in customers 
+        from o in c.Orders 
+        where o.Total < 500.00M 
+        select new { c.CustomerID, o.OrderID, o.Total }; 
+''');
+
+  final orders = customers.expand((c) => c.orders
+      .where((o) => o.total < 500)
+      .map((e) => {
+            'CustomerId': c.customerId,
+            'OrderId': e.orderId,
+            'Total': e.total
+          }));
+
+  orders.forEach(print);
+}
+
+void selectManyCompoundFrom1() {
+  print('''
+
+select many compound from 1 
+---------------------------
+C#:
+    int[] numbersA = { 0, 2, 4, 5, 6, 8, 9 }; 
+    int[] numbersB = { 1, 3, 5, 7, 8 }; 
+    var pairs = 
+        from a in numbersA 
+        from b in numbersB 
+        where a < b 
+        select new { a, b }; 
+''');
+
+  const numbersA = [0, 2, 4, 5, 6, 8, 9];
+  const numbersB = [1, 3, 5, 7, 8];
+  final pairs = numbersA
+      .expand((a) => numbersB.where((b) => a < b).map((b) => {'a': a, 'b': b}));
+
+  print('Pairs where a < b:');
+  for (final pair in pairs) {
+    print('${pair['a']} is less than ${pair['b']}');
+  }
+}
+
+void selectFiltered() {
+  print('''
+
+select filtered 
+---------------
+C#:
+    int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 }; 
+    string[] digits = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" }; 
+    var lowNums = 
+        from n in numbers 
+        where n < 5 
+        select digits[n]; 
+
+''');
+
+  final lowNums = numbers.where((n) => n < 5).map((e) => digits[e]);
+
+  print('Numbers < 5:');
+  lowNums.forEach(print);
+}
+
+void selectIndexed() {
+  print('''
+
+select indexed 
+--------------
+C#:
+    int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 }; 
+    var numsInPlace = numbers.Select((num, index) => new { Num = num, InPlace = (num == index) }); 
+''');
+
+  int index = 0;
+  final numsInPlace = numbers.map((n) => {'Num': n, 'InPlace': (n == index++)});
+
+  print('Numver: In-place?');
+  for (final n in numsInPlace) {
+    print('${n['Num']}: ${n['InPlace']}');
+  }
+}
+
+void selectAnonymousTypes3() {
+  print('''
+
+select anonymous types 3
+------------------------
+C#:
+    List<Product> products = GetProductList(); 
+    var productInfos = 
+        from p in products 
+        select new { p.ProductName, p.Category, Price = p.UnitPrice }; 
+''');
+
+  final productInfos = productsList().map((p) => {
+        'ProductName': p.productName,
+        'Category': p.category,
+        'Price': p.unitPrice
+      });
+
+  print('Product Info:');
+  for (final p in productInfos) {
+    print(
+        '${p['ProductName']} is in the category ${p['Category']} and costs ${p['Price']} per unit.');
+  }
+}
+
+void selectAnonymousTypes2() {
+  print('''
+
+select anonymous types 2
+------------------------
+C#:
+    int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 }; 
+    string[] strings = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" }; 
+    var digitOddEvens = 
+        from n in numbers 
+        select new { Digit = strings[n], Even = (n % 2 == 0) }; 
+''');
+
+  final digitOddEvens =
+      numbers.map((n) => {'Digit': digits[n], 'Even': (n % 2 == 0)});
+
+  for (final d in digitOddEvens) {
+    print("The digit ${d['Digit']} is ${d['Even'] == true ? 'even' : 'odd'}.");
+  }
+}
+
+void selectAnonymousTypes1() {
+  print('''
+
+select anonymous types 1
+------------------------
 C#:
     string[] words = { "aPPLE", "BlUeBeRrY", "cHeRry" }; 
     var upperLowerWords = 
@@ -53,7 +304,7 @@ C#:
   const words = ['aPPLE', 'BlUeBeRrY', 'cHeRry'];
   final upperLowerWords =
       words.map((e) => {'Upper': e.toUpperCase(), 'Lower': e.toLowerCase()});
-  for (var ul in upperLowerWords) {
+  for (final ul in upperLowerWords) {
     print('Uppercase: ${ul['Upper']}, Lowercase: ${ul['Lower']}');
   }
 }
@@ -130,7 +381,7 @@ C#:
   }
 }
 
-Future<void> whereSimple4() async {
+void whereSimple4() {
   print('''
 
 where simple 4 
@@ -143,8 +394,7 @@ C#:
         select c;
 ''');
 
-  final waCustomers = await customersList()
-      .then((customers) => customers.where((c) => c.region == "WA"));
+  final waCustomers = customers.where((c) => c.region == "WA");
 
   print('Customers from Washington and their orders:');
   for (final c in waCustomers) {
