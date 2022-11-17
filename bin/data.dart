@@ -1,6 +1,7 @@
 library linq_data;
 
-// import 'dart:io';
+import 'dart:io';
+import 'dart:convert' as convert;
 // import 'dart:json' as JSON;
 // import 'dart:mirrors';
 
@@ -24,41 +25,45 @@ class Product {
       }.toString();
 }
 
-// class Order
-// {
-//   int orderId;
-//   DateTime orderDate;
-//   double total;
+class Order {
+  int orderId;
+  DateTime orderDate;
+  double total;
 
-//   Order([this.orderId=null, this.orderDate=null, this.total=null]);
+  Order(this.orderId, this.orderDate, this.total);
 
-//   toString() => {
-//       'orderId':orderId,
-//       'orderDate':orderDate,
-//       'total':total
-//     }.toString();
-// }
+  @override
+  toString() =>
+      {'orderId': orderId, 'orderDate': orderDate, 'total': total}.toString();
+}
 
-// class Customer
-// {
-//   String customerId;
-//   String companyName;
-//   String address;
-//   String city;
-//   String region;
-//   String postalCode;
-//   String country;
-//   String phone;
-//   String fax;
-//   List<Order> orders;
+class Customer {
+  String customerId;
+  String companyName;
+  String address;
+  String city;
+  String region;
+  String postalCode;
+  String country;
+  String phone;
+  String fax;
+  List<dynamic> orders;
 
-//   toString() => "$customerId, $companyName -> ${orders.length} orders";
+  @override
+  toString() => "$customerId, $companyName -> ${orders.length} orders";
 
-//   Customer([this.customerId=null, this.companyName=null,
-//       this.address=null, this.city=null, this.region=null, this.postalCode=null, this.country=null,
-//       this.phone=null, this.fax=null])
-//         : orders = new List<Order>();
-// }
+  Customer(
+      [this.customerId = '',
+      this.companyName = '',
+      this.address = '',
+      this.city = '',
+      this.region = '',
+      this.postalCode = '',
+      this.country = '',
+      this.phone = '',
+      this.fax = ''])
+      : orders = <dynamic>[];
+}
 
 List<Product> productsList() {
   var products = <Product>[
@@ -143,39 +148,56 @@ List<Product> productsList() {
   return products;
 }
 
-// List<Customer> _customers;
-// List<Customer> customersList()
-// {
-//   if (_customers == null)
-//   {
-//     var file = new File("../Customers.json");
-//     var json = file.readAsStringSync();
+List<dynamic> _customers = <dynamic>[];
+Future<List<Customer>> customersList() async {
+  var input = await File('Customers.json').readAsString();
+  var mapCustomers = convert.jsonDecode(input);
+  _customers = mapCustomers['customers']
+      .map((c) => Customer(
+          c['id'],
+          c['name'],
+          c['address'],
+          c['city'],
+          c['region'] ?? '',
+          c['postalCode'] ?? '',
+          c['country'],
+          c['phone'],
+          c['fax'] ?? '')
+        ..orders = safe(safe(c['orders'])['order'], [])
+            .map((o) => Order(int.parse(o['id']),
+                DateTime.parse(o['orderdate']), double.parse(o['total'])))
+            .toList())
+      .toList();
+  return List<Customer>.from(_customers);
+}
 
-//     var mapCustomers = JSON.parse(json);
-//     _customers = mapCustomers['customers'].map((c) =>
-//       new Customer(
+dynamic safe(o, [orElse = const {}]) {
+  return o ?? orElse;
+}
+// Future<List<Customer>> customersList() async {
+//   var input = await File('Customers.json').readAsString();
+//   var mapCustomers = convert.jsonDecode(input);
+//   var customers = mapCustomers['customers']
+//       .map((c) => Customer(
 //           c['id'],
-//           c['name'],
-//           c['address'],
-//           c['city'],
-//           c['region'],
-//           c['postalCode'],
-//           c['country'],
-//           c['phone'],
-//           c['fax'])
-//         ..orders = safe(safe(c['orders'])['order'], []).map((o) =>
-//             new Order(
-//                 int.parse(o['id']),
-//                 DateTime.parse(o['orderdate']),
-//                 double.parse(o['total']))
-//           ).toList()
-//       ).toList();
-//   }
-//   return _customers;
+//           c['name'] ?? '',
+//           c['address'] ?? '',
+//           c['city'] ?? '',
+//           c['region'] ?? '',
+//           c['postalCode'] ?? '',
+//           c['country'] ?? '',
+//           c['phone'] ?? '',
+//           c['fax'] ?? '')
+//         ..orders = safe(safe(c['orders'])['order'], <Order>[])
+//             .map((o) => Order(int.parse(o['id']),
+//                 DateTime.parse(o['orderdate']), double.parse(o['total'])))
+//             .toList())
+//       .toList();
+//   return customers;
 // }
 
-// safe(o, [orElse=const {}]){
-//   return o != null ? o : orElse;
+// safe(o, [orElse = const <Order>[]]) {
+//   return o ?? orElse;
 // }
 
 // log(o){
