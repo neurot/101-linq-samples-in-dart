@@ -13,12 +13,17 @@ void restrictingOperators() {
 }
 
 void whereSimpe2() {
-// List<Product> products = GetProductList();
+  print('''
 
-// var soldOutProducts =
-//   from p in products
-//   where p.UnitsInStock == 0
-//   select p;
+where simple 2
+--------------
+C#:
+  List<Product> products = GetProductList();
+  var soldOutProducts =
+    from p in products
+    where p.UnitsInStock == 0
+    select p;
+''');
 
   var products = productsList();
 
@@ -28,22 +33,24 @@ void whereSimpe2() {
   for (var p in soldOutProducts) {
     print('${p.productName} is sold out!');
   }
-
-  print('');
 }
 
 void whereSimple1() {
-// int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
-// var lowNums =
-//   from n in numbers
-//   where n < 5
-//   select n;
+  print('''
+
+where simple 1
+--------------
+C#:
+  int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+  var lowNums =
+    from n in numbers
+    where n < 5
+    select n;
+''');
 
   var numbers = [5, 4, 1, 3, 9, 8, 6, 7, 2, 0];
   var lowNums = numbers.where((element) => element < 5);
 
   print('Numbers < 5:');
   lowNums.forEach(print);
-
-  print('');
 }
