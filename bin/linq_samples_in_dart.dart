@@ -2,21 +2,6 @@
 
 import 'data.dart';
 
-const numbers = [5, 4, 1, 3, 9, 8, 6, 7, 2, 0];
-const digits = [
-  'zero',
-  'one',
-  'two',
-  'three',
-  'four',
-  'five',
-  'six',
-  'seven',
-  'eight',
-  'nine'
-];
-final customers = customersList();
-
 Future<void> main() async {
   await restrictingOperators(); // aka where
   projectionOperators(); // aka select / map
@@ -52,8 +37,8 @@ void projectionOperators() {
 void selectManyIndexed() {
   print('''
 
-select many multiple from 
--------------------------
+019 select many multiple from 
+-----------------------------
 C#:
     List<Customer> customers = GetCustomerList(); 
     var customerOrders = 
@@ -76,8 +61,8 @@ C#:
 void selectManyMultipleFrom() {
   print('''
 
-select many multiple from 
--------------------------
+018 select many multiple from 
+-----------------------------
 C#:
     List<Customer> customers = GetCustomerList(); 
     DateTime cutoffDate = new DateTime(1997, 1, 1); 
@@ -105,8 +90,8 @@ C#:
 void selectManyFromAssignment() {
   print('''
 
-select many from assignment 
----------------------------
+017 select many from assignment 
+-------------------------------
 C#:
     List<Customer> customers = GetCustomerList(); 
     var orders = 
@@ -130,8 +115,8 @@ C#:
 Future<void> selectManyCompoundFrom3() async {
   print('''
 
-select many compound from 3 
----------------------------
+016 select many compound from 3 
+-------------------------------
 C#:
     List<Customer> customers = GetCustomerList(); 
     var orders = 
@@ -155,8 +140,8 @@ C#:
 void selectManyCompoundFrom2() {
   print('''
 
-select many compound from 2 
----------------------------
+015 select many compound from 2 
+-------------------------------
 C#:
     List<Customer> customers = GetCustomerList(); 
     var orders = 
@@ -180,8 +165,8 @@ C#:
 void selectManyCompoundFrom1() {
   print('''
 
-select many compound from 1 
----------------------------
+014 select many compound from 1 
+-------------------------------
 C#:
     int[] numbersA = { 0, 2, 4, 5, 6, 8, 9 }; 
     int[] numbersB = { 1, 3, 5, 7, 8 }; 
@@ -206,8 +191,8 @@ C#:
 void selectFiltered() {
   print('''
 
-select filtered 
----------------
+013 select filtered 
+-------------------
 C#:
     int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 }; 
     string[] digits = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" }; 
@@ -227,8 +212,8 @@ C#:
 void selectIndexed() {
   print('''
 
-select indexed 
---------------
+012 select indexed 
+------------------
 C#:
     int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 }; 
     var numsInPlace = numbers.Select((num, index) => new { Num = num, InPlace = (num == index) }); 
@@ -246,8 +231,8 @@ C#:
 void selectAnonymousTypes3() {
   print('''
 
-select anonymous types 3
-------------------------
+011 select anonymous types 3
+----------------------------
 C#:
     List<Product> products = GetProductList(); 
     var productInfos = 
@@ -271,8 +256,8 @@ C#:
 void selectAnonymousTypes2() {
   print('''
 
-select anonymous types 2
-------------------------
+010 select anonymous types 2
+----------------------------
 C#:
     int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 }; 
     string[] strings = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" }; 
@@ -292,8 +277,8 @@ C#:
 void selectAnonymousTypes1() {
   print('''
 
-select anonymous types 1
-------------------------
+009 select anonymous types 1
+----------------------------
 C#:
     string[] words = { "aPPLE", "BlUeBeRrY", "cHeRry" }; 
     var upperLowerWords = 
@@ -312,8 +297,8 @@ C#:
 void selectTransformation() {
   print('''
 
-select transformation
----------------------
+008 select transformation
+-------------------------
 C#:
     int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 }; 
     string[] strings = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" }; 
@@ -330,8 +315,8 @@ C#:
 void selectSimple2() {
   print('''
 
-select simple 2 
----------------
+007 select simple 2 
+-------------------
 C#:
     List<Product> products = GetProductList(); 
     var productNames = 
@@ -347,8 +332,8 @@ C#:
 void selectSimple1() {
   print('''
 
-select simple 1 
----------------
+006 select simple 1 
+-------------------
 C#:
     int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 }; 
     var numsPlusOne = 
@@ -364,8 +349,8 @@ C#:
 void whereIndexed() {
   print('''
 
-where indexed 
--------------
+005 where indexed 
+-----------------
 C#:
 
     string[] digits = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" }; 
@@ -384,8 +369,8 @@ C#:
 void whereSimple4() {
   print('''
 
-where simple 4 
---------------
+004 where simple 4 
+------------------
 C#:
     List<Customer> customers = GetCustomerList(); 
     var waCustomers = 
@@ -408,8 +393,8 @@ C#:
 void whereSimple3() {
   print('''
 
-where simple 3
---------------
+003 where simple 3
+------------------
 C#:
     List<Product> products = GetProductList(); 
     var expensiveInStockProducts = 
@@ -431,8 +416,8 @@ C#:
 void whereSimple2() {
   print('''
 
-where simple 2
---------------
+002 where simple 2
+------------------
 C#:
     List<Product> products = GetProductList();
     var soldOutProducts =
@@ -452,8 +437,8 @@ C#:
 void whereSimple1() {
   print('''
 
-where simple 1
---------------
+001 where simple 1
+------------------
 C#:
     int[] numbers = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
     var lowNums =
