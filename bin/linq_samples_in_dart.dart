@@ -2,13 +2,15 @@
 
 import 'data.dart';
 
-Future<void> main() async {
-  await restrictingOperators(); // aka where
+void main() {
+  restrictingOperators(); // aka where
   projectionOperators(); // aka select / map
 }
 
-Future<void> restrictingOperators() async {
-// aka where
+// Restriction Operators
+// The where clause of a LINQ query restricts the output sequence.
+// Only the elements that match a condition are added to the output sequence.
+void restrictingOperators() {
   whereSimple1();
   whereSimple2();
   whereSimple3();
@@ -16,12 +18,15 @@ Future<void> restrictingOperators() async {
   whereIndexed();
 }
 
+// Projection Operators
+// The select clause of a LINQ query projects the output sequence.
+// It transforms each input element into the shape of the output sequence
+// --> Using map in dart
 void projectionOperators() {
-// aka select / map
   selectSimple1();
-  selectSimple2();
+  selectProperty();
   selectTransformation();
-  selectAnonymousTypes1();
+  selectByCaseAnonymous();
   selectAnonymousTypes2();
   selectAnonymousTypes3();
   selectIndexed();
@@ -33,6 +38,11 @@ void projectionOperators() {
   selectManyMultipleFrom();
   selectManyIndexed();
 }
+
+// Partition Operators
+// The methods Take, Skip, TakeWhile and SkipWhile partition an output sequence.
+// You use these to limit the portion of an input sequence transferred to the output sequence.
+void partitioningOperators() {}
 
 void selectManyIndexed() {
   print('''
@@ -274,7 +284,7 @@ C#:
   }
 }
 
-void selectAnonymousTypes1() {
+void selectByCaseAnonymous() {
   print('''
 
 009 select anonymous types 1
@@ -312,7 +322,7 @@ C#:
   textNums.forEach(print);
 }
 
-void selectSimple2() {
+void selectProperty() {
   print('''
 
 007 select simple 2 
